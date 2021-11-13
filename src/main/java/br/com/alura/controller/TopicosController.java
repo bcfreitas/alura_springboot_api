@@ -3,12 +3,14 @@ package br.com.alura.controller;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.alura.controller.dto.TopicoDTO;
 import br.com.alura.forum.modelo.Curso;
 import br.com.alura.forum.modelo.Topico;
+import br.com.alura.repository.TopicoRepository;
 
 //ao usar a annotation RestController em lugar
 //da Controller, dispensa o uso da @ResponseBody nos métodos usados pelos
@@ -17,6 +19,9 @@ import br.com.alura.forum.modelo.Topico;
 @RestController
 public class TopicosController {
 	
+	@Autowired
+	private TopicoRepository topicoRepository;
+	
 	@RequestMapping("/topicos")
 	//usar classes de domínio para respostas não é uma boa prática,
 	//pois o spring (usando o Jackson por baixo) converte todos os atributos
@@ -24,10 +29,7 @@ public class TopicosController {
 	//todos os atributos. Em seu lugar, devemos usar DTOs (Data Transfer Objects
 	public List<TopicoDTO> lista(){
 
-		//mock de data source
-		Topico topico = new Topico("duvida", "duvida com spring", new Curso("Spring", "Programação"));
-		
-		List<Topico> topicos = Arrays.asList(topico, topico, topico);
+		List<Topico> topicos = topicoRepository.findAll();
 		
 		return TopicoDTO.convert(topicos);
 	}

@@ -33,6 +33,12 @@ public class Topico {
 	@OneToMany(mappedBy = "topico")
 	private List<Resposta> respostas = new ArrayList<>();
 
+	//para usar o repository do JPA é necessário explicitar
+	//o construtor padrao da classe, caso ja haja outros construtores.
+	public Topico() {
+		
+	}
+	
 	public Topico(String titulo, String mensagem, Curso curso) {
 		this.titulo = titulo;
 		this.mensagem = mensagem;

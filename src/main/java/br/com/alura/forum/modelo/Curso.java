@@ -14,6 +14,11 @@ public class Curso {
 	private String nome;
 	private String categoria;
 
+	//construtor padrao para o jpa funcionar ok
+	public Curso() {
+		
+	}
+	
 	public Curso(String nome, String categoria) {
 		this.nome = nome;
 		this.categoria = categoria;
