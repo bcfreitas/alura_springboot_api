@@ -27,10 +27,21 @@ public class TopicosController {
 	//pois o spring (usando o Jackson por baixo) converte todos os atributos
 	//para JSON, e nem sempre queremos/podemos retornar
 	//todos os atributos. Em seu lugar, devemos usar DTOs (Data Transfer Objects
-	public List<TopicoDTO> lista(){
-
-		List<Topico> topicos = topicoRepository.findAll();
+	public List<TopicoDTO> lista(String nomeCurso){
+		if(nomeCurso == null) {
+			List<Topico> topicos = topicoRepository.findAll();
+			return TopicoDTO.convert(topicos);	
+		} else {
+			List<Topico> topicos = topicoRepository.findByCursoNome(nomeCurso);
+			return TopicoDTO.convert(topicos);
+		}
 		
-		return TopicoDTO.convert(topicos);
+	}
+	
+	@RequestMapping("/topicosComQuery")
+	public List<TopicoDTO> listaComQueryExplicita(String nomeCurso){
+		//Testando chamada de método do repository que usa query explícita
+		List<Topico> topicos2 = topicoRepository.consultarPorNomeDoCurso(nomeCurso);
+		return TopicoDTO.convert(topicos2);
 	}
 }
