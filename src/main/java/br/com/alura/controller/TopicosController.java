@@ -1,15 +1,17 @@
 package br.com.alura.controller;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.alura.controller.dto.TopicoDTO;
-import br.com.alura.forum.modelo.Curso;
+import br.com.alura.controller.form.TopicoForm;
 import br.com.alura.forum.modelo.Topico;
+import br.com.alura.repository.CursoRepository;
 import br.com.alura.repository.TopicoRepository;
 
 //ao usar a annotation RestController em lugar
@@ -17,16 +19,22 @@ import br.com.alura.repository.TopicoRepository;
 //endpoints, pois o spring já entende que o retorno deve ser parte do body da response,
 //em lugar da página de destino.
 @RestController
+//para não ter que repetir a URL em cada método, esta
+//anotação sobe para a classe do controlador
+@RequestMapping(value="/topicos")
 public class TopicosController {
 	
 	@Autowired
 	private TopicoRepository topicoRepository;
 	
-	@RequestMapping("/topicos")
+	@Autowired
+	private CursoRepository cursoRepository;
+	
 	//usar classes de domínio para respostas não é uma boa prática,
 	//pois o spring (usando o Jackson por baixo) converte todos os atributos
 	//para JSON, e nem sempre queremos/podemos retornar
 	//todos os atributos. Em seu lugar, devemos usar DTOs (Data Transfer Objects
+	@GetMapping  //substitui @RequestMapping(method=RequestMethod.GET)
 	public List<TopicoDTO> lista(String nomeCurso){
 		if(nomeCurso == null) {
 			List<Topico> topicos = topicoRepository.findAll();
@@ -43,5 +51,12 @@ public class TopicosController {
 		//Testando chamada de método do repository que usa query explícita
 		List<Topico> topicos2 = topicoRepository.consultarPorNomeDoCurso(nomeCurso);
 		return TopicoDTO.convert(topicos2);
+	}
+	
+	@PostMapping //substitui @RequestMapping(method=RequestMethod.POST)
+	//o professor achou melhor criar um dto específico para post, TopicoForm
+	public void cadastrar(TopicoForm topicoForm) {
+		Topico topico = topicoForm.converter(cursoRepository);
+		topicoRepository.save(topico);
 	}
 }
