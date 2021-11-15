@@ -1,12 +1,15 @@
 package br.com.alura.controller;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.alura.controller.dto.TopicoDTO;
 import br.com.alura.controller.form.TopicoForm;
@@ -55,8 +58,14 @@ public class TopicosController {
 	
 	@PostMapping //substitui @RequestMapping(method=RequestMethod.POST)
 	//o professor achou melhor criar um dto específico para post, TopicoForm
-	public void cadastrar(TopicoForm topicoForm) {
+	//foi adicionado o parâmetro UriComponentsBuilder para facilitar a montagem da URI de retorno
+	public ResponseEntity<TopicoDTO> cadastrar(TopicoForm topicoForm, UriComponentsBuilder uriBuilder) {
 		Topico topico = topicoForm.converter(cursoRepository);
 		topicoRepository.save(topico);
+		
+		//Monta a URI do recurso criado para devolver
+		URI uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
+		//devolve a URI do recurso criado com o próprio recurso criado.
+		return ResponseEntity.created(uri).body(new TopicoDTO(topico));
 	}
 }
