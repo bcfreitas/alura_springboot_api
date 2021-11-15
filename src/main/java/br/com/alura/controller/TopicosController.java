@@ -3,6 +3,8 @@ package br.com.alura.controller;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,7 +63,11 @@ public class TopicosController {
 	//o professor achou melhor criar um dto específico para post, TopicoForm
 	//foi adicionado o parâmetro UriComponentsBuilder para facilitar a montagem da URI de retorno
 	//a annotation RequestBody indica que os dados vêm no corpo do request
-	public ResponseEntity<TopicoDTO> cadastrar(@RequestBody TopicoForm topicoForm, UriComponentsBuilder uriBuilder) {
+	//
+	//validação: a validação poderia se dar com if elses aqui mesmo, mas iria poluir... em lugar disso,
+	//podemos usar as validações do Bean Validator do próprio java, que o Spring se integra,
+	//colocando anotações na própria classe dto.
+	public ResponseEntity<TopicoDTO> cadastrar(@RequestBody @Valid TopicoForm topicoForm, UriComponentsBuilder uriBuilder) {
 		Topico topico = topicoForm.converter(cursoRepository);
 		topicoRepository.save(topico);
 		
