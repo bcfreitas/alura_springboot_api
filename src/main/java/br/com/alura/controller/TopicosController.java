@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -59,13 +60,14 @@ public class TopicosController {
 	@PostMapping //substitui @RequestMapping(method=RequestMethod.POST)
 	//o professor achou melhor criar um dto específico para post, TopicoForm
 	//foi adicionado o parâmetro UriComponentsBuilder para facilitar a montagem da URI de retorno
-	public ResponseEntity<TopicoDTO> cadastrar(TopicoForm topicoForm, UriComponentsBuilder uriBuilder) {
+	//a annotation RequestBody indica que os dados vêm no corpo do request
+	public ResponseEntity<TopicoDTO> cadastrar(@RequestBody TopicoForm topicoForm, UriComponentsBuilder uriBuilder) {
 		Topico topico = topicoForm.converter(cursoRepository);
 		topicoRepository.save(topico);
 		
 		//Monta a URI do recurso criado para devolver
 		URI uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
-		//devolve a URI do recurso criado com o próprio recurso criado.
+		//devolve status 201 (Created), a URI do recurso criado com o próprio recurso criado.
 		return ResponseEntity.created(uri).body(new TopicoDTO(topico));
 	}
 }
