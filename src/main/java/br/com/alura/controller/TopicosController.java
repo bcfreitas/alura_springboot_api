@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,6 +73,7 @@ public class TopicosController {
 	//validação: a validação poderia se dar com if elses aqui mesmo, mas iria poluir... em lugar disso,
 	//podemos usar as validações do Bean Validator do próprio java, que o Spring se integra,
 	//colocando anotações na própria classe dto.
+	@Transactional
 	public ResponseEntity<TopicoDTO> cadastrar(@RequestBody @Valid TopicoForm topicoForm, UriComponentsBuilder uriBuilder) {
 		Topico topico = topicoForm.converter(cursoRepository);
 		topicoRepository.save(topico);
@@ -97,5 +99,12 @@ public class TopicosController {
 		Topico topico = form.atualizar(id, topicoRepository);
 		
 		return ResponseEntity.ok(new TopicoDTO(topico));
+	}
+	
+	@DeleteMapping("/{id}")
+	@Transactional
+	public ResponseEntity<?> remover(@PathVariable Long id){
+		topicoRepository.deleteById(id);
+		return ResponseEntity.ok().build();
 	}
 }
