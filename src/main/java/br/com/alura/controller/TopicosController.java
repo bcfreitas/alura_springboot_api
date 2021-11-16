@@ -3,6 +3,7 @@ package br.com.alura.controller;
 import java.net.URI;
 import java.util.List;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.alura.controller.dto.AtualizacaoTopicoForm;
 import br.com.alura.controller.dto.DetalhesTopicoDto;
 import br.com.alura.controller.dto.TopicoDTO;
 import br.com.alura.controller.form.TopicoForm;
@@ -85,5 +88,14 @@ public class TopicosController {
 	public DetalhesTopicoDto detalhar(@PathVariable long id) {
 		Topico topico = topicoRepository.getById(id);
 		return new DetalhesTopicoDto(topico);
+	}
+	
+	@PutMapping("/{id}")
+	//esta annotation faz com que após a conslusão os dados sejam persistidos.
+	@Transactional
+	public ResponseEntity<TopicoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizacaoTopicoForm form) {
+		Topico topico = form.atualizar(id, topicoRepository);
+		
+		return ResponseEntity.ok(new TopicoDTO(topico));
 	}
 }
