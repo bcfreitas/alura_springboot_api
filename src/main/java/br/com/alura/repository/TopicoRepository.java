@@ -2,6 +2,8 @@ package br.com.alura.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,7 +20,7 @@ public interface TopicoRepository extends JpaRepository<Topico, Long>{
 	//nem precisa implementar a query, basta seguir o padrao
 	//findByEntidadeAtributo[0]..Atributo[n]
 	//que ele vai montar a query com os joins automagicamente!!
-	public List<Topico> findByCursoNome(String nomeCurso);
+	public Page<Topico> findByCursoNome(String nomeCurso, Pageable paginacao);
 	
 	//Obs. Caso exista um atributo CursoNome na classe Topico, o Spring iria priorizar ele!
 	//mas para indicar que queremos pegar o nome da entidade Curso, bastaria usar assim
