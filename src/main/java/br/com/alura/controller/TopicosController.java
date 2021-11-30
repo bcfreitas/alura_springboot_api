@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,10 +58,11 @@ public class TopicosController {
 	//required = true or false
 	@GetMapping  //substitui @RequestMapping(method=RequestMethod.GET)
 	public Page<TopicoDTO> lista(@RequestParam(required = false) String nomeCurso, 
-			@RequestParam int pagina, @RequestParam int qtd){
+			@RequestParam int pagina, @RequestParam int qtd, @RequestParam String ordenacao){
 		
 		//o spring facilita a paginação do JPA com a interface Pageable
-		Pageable paginacao = PageRequest.of(pagina, qtd);
+		//também outras opcoes no metodo PageRequest.of, para ordenacao
+		Pageable paginacao = PageRequest.of(pagina, qtd, Direction.ASC, ordenacao);
 		
 		if(nomeCurso == null) {
 			//A classe Page contém a lista encapsulada, e outras informações
