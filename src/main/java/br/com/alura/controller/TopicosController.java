@@ -9,9 +9,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,12 +57,15 @@ public class TopicosController {
 	//obrigatorio, mas podemos usar a anotação @RequestParam explicitamente, que possui a opção 
 	//required = true or false
 	@GetMapping  //substitui @RequestMapping(method=RequestMethod.GET)
+	//O pageable pode ser colocado diretamente com parâmetro do método do endpoint,
+	//desde que a annotation @EnableSpringDataWebSupport seja usada na classe principal da aplicação
 	public Page<TopicoDTO> lista(@RequestParam(required = false) String nomeCurso, 
-			@RequestParam int pagina, @RequestParam int qtd, @RequestParam String ordenacao){
+			//podemos definir os valores padrao que serao usados se nao vierem na url com @PageableDefault
+			@PageableDefault(sort="id", direction = Direction.DESC, page=0, size=10) Pageable paginacao){
 		
 		//o spring facilita a paginação do JPA com a interface Pageable
 		//também outras opcoes no metodo PageRequest.of, para ordenacao
-		Pageable paginacao = PageRequest.of(pagina, qtd, Direction.ASC, ordenacao);
+		//Pageable paginacao = PageRequest.of(pagina, qtd, Direction.ASC, ordenacao);
 		
 		if(nomeCurso == null) {
 			//A classe Page contém a lista encapsulada, e outras informações
