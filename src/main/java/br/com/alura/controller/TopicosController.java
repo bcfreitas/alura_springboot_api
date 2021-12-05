@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -59,6 +60,8 @@ public class TopicosController {
 	@GetMapping  //substitui @RequestMapping(method=RequestMethod.GET)
 	//O pageable pode ser colocado diretamente com parâmetro do método do endpoint,
 	//desde que a annotation @EnableSpringDataWebSupport seja usada na classe principal da aplicação
+	//informa ao spring que desejamos armazenar cache para retorno deste método 
+	@Cacheable(value = "listaDeTopicos")
 	public Page<TopicoDTO> lista(@RequestParam(required = false) String nomeCurso, 
 			//podemos definir os valores padrao que serao usados se nao vierem na url com @PageableDefault
 			@PageableDefault(sort="id", direction = Direction.DESC, page=0, size=10) Pageable paginacao){
