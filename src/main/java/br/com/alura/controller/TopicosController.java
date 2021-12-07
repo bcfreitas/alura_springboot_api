@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -97,6 +98,8 @@ public class TopicosController {
 	//podemos usar as validações do Bean Validator do próprio java, que o Spring se integra,
 	//colocando anotações na própria classe dto.
 	@Transactional
+	//esta anotação faz com que o cache indicado seja invalidado quando este método rodar
+	@CacheEvict(value="listaDeTopicos", allEntries=true)
 	public ResponseEntity<TopicoDTO> cadastrar(@RequestBody @Valid TopicoForm topicoForm, UriComponentsBuilder uriBuilder) {
 		Topico topico = topicoForm.converter(cursoRepository);
 		topicoRepository.save(topico);
@@ -124,6 +127,7 @@ public class TopicosController {
 	@PutMapping("/{id}")
 	//esta annotation faz com que após a conslusão os dados sejam persistidos.
 	@Transactional
+	@CacheEvict(value="listaDeTopicos", allEntries=true)
 	public ResponseEntity<TopicoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizacaoTopicoForm form) {
 		Optional<Topico> optional = topicoRepository.findById(id);
 		if(optional.isPresent()) {
@@ -136,6 +140,7 @@ public class TopicosController {
 	
 	@DeleteMapping("/{id}")
 	@Transactional
+	@CacheEvict(value="listaDeTopicos", allEntries=true)
 	public ResponseEntity<?> remover(@PathVariable Long id){
 		Optional<Topico> topico = topicoRepository.findById(id);
 		if(topico.isPresent()) {
